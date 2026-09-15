@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>warqstress.xyz | Next-Gen Stresser Panel</title>
+</head>
+<body>
+
+    <!-- Üst Menü (Navbar) -->
+    <header>
+        <div class="logo">WARQ<span>STRESS</span></div>
+        <div class="status-badge">SYSTEM SECURE</div>
+    </header>
+
+    <!-- Ana Panel İçerik Alanı Başlangıcı -->
+    <main>
+        
+        <!-- Sol Kolon: Siyah Beyaz Canlı Radar Kartı -->
+        <div class="card radar-wrapper">
+            <div class="card-title">Threat Radar</div>
+            <div class="radar-container">
+                <canvas id="radarCanvas" width="220" height="220"></canvas>
+                <div class="radar-status">
+                    <div>SCANNING NETWORK...</div>
+                    <div id="radarCoords" style="color: #64748b; font-size: 10px; margin-top: 4px;">SYS: OK</div>
+                </div>
+            </div>
+        </div>
+        <!-- Orta Kolon: Stresser Test Ayarları Formu -->
+        <div class="card">
+            <div class="card-title">Launch Stress Test</div>
+            
+            <div class="form-group">
+                <label>Target IP / URL</label>
+                <input type="text" placeholder="127.0.0.1 veya https://example.com" id="targetInput">
+            </div>
+
+            <div class="grid-inputs">
+                <div class="form-group">
+                    <label>Port</label>
+                    <input type="number" placeholder="80">
+                </div>
+                <div class="form-group">
+                    <label>Time (Seconds)</label>
+                    <input type="number" placeholder="60">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Attack Method</label>
+                <select>
+                    <option disabled>-- Layer 4 (Network) --</option>
+                    <option>DNS-AMP (Amplification)</option>
+                    <option>UDP-RAW</option>
+                    <option>TCP-SYN Flood</option>
+                    <option disabled>-- Layer 7 (Application) --</option>
+                    <option selected>HTTP-BYPASS (Cloudflare/Brave Shield)</option>
+                    <option>HTTP-FLOOD</option>
+                    <option>TLS-STRIKE</option>
+                </select>
+            </div>
+
+            <button class="btn-submit">Start Flood</button>
+        </div>
+
+        <!-- Sağ Kolon: Ağ Kapasitesi & Admin İletişim Bilgileri -->
+        <div class="side-stack">
+            <div class="card">
+                <div class="card-title">Network Capacity</div>
+                
+                <div class="stat-row">
+                    <div class="stat-info">
+                        <span>Total Power Capacity</span>
+                        <span style="color: #ffffff; font-weight: bold;">1.2 Tbps</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill-white"></div>
+                    </div>
+                </div>
+
+                <div class="stat-row">
+                    <div class="stat-info">
+                        <span>Concurrent Slots</span>
+                        <span style="color: #94a3b8; font-weight: bold;">0 / 15 Active</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill-gray"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Administration</div>
+                
+                <div class="info-box">
+                    <span>Owner:</span>
+                    <span class="val-owner">anix</span>
+                </div>
+
+                <a href="https://t.me" target="_blank" class="info-box tg">
+                    <span>Telegram:</span>
+                    <span class="val-tg">@l7run</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Sayfa Alt Bilgisi -->
+    <footer>
+        Powered By anixsenior.com Protection
+    </footer>
+    <!-- CSS Kodları -->
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            background-color: #0b0f19; 
+            color: #f8fafc; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 100vh;
+            background-image: linear-gradient(to right, rgba(255,255,255,0.01) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.01) 1px, transparent 1px); 
+            background-size: 20px 20px;
+        }
+        header {
+            border-bottom: 1px solid #1e293b;
+            background-color: rgba(15, 23, 42, 0.8);
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { font-size: 20px; font-weight: 900; letter-spacing: 1px; color: #ffffff; }
+        .logo span { color: #ffffff; text-shadow: 0 0 8px rgba(255,255,255,0.6); }
+        .status-badge {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            padding: 5px 12px;
+            border-radius: 9999px;
+            font-size: 13px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        main {
+            flex-grow: 1;
+            max-width: 1200px;
+            width: 100%;
+            margin: 20px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 280px 1fr 300px;
+            gap: 20px;
+            align-items: start;
+        }
+        @media (max-width: 1024px) {
+            main { grid-template-columns: 1fr 1fr; }
+            .radar-wrapper { grid-column: span 2; }
+        }
+        @media (max-width: 768px) {
+            main { grid-template-columns: 1fr; }
+            .radar-wrapper { grid-column: span 1; }
+        }
+        .card {
+            background-color: rgba(15, 23, 42, 0.9);
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 22px;
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.5);
+        }
+        .card-title {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #1e293b;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .radar-container { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        #radarCanvas { background-color: #05070f; border: 1px solid #334155; border-radius: 50%; max-width: 100%; }
+        .radar-status { margin-top: 15px; font-family: monospace; font-size: 11px; color: #94a3b8; text-align: center; width: 100%; }
+        .form-group { margin-bottom: 18px; }
+        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        label { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; color: #94a3b8; margin-bottom: 8px; letter-spacing: 0.5px; }
+        input, select { width: 100%; background-color: #020617; border: 1px solid #1e293b; border-radius: 8px; padding: 12px 15px; color: #f8fafc; font-size: 14px; outline: none; }
+        input:focus, select:focus { border-color: #64748b; }
+        .btn-submit { width: 100%; background: linear-gradient(to right, #475569, #0f172a); color: white; border: 1px solid #475569; padding: 15px; border-radius: 8px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; font-size: 14px; margin-top: 10px; transition: all 0.2s; }
+        .btn-submit:hover { background: #ffffff; color: #000000; border-color: #ffffff; }
+        .side-stack { display: flex; flex-direction: column; gap: 20px; }
+        .stat-row { margin-bottom: 15px; }
+        .stat-info { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; }
+        .progress-bar { width: 100%; background-color: #020617; border: 1px solid #1e293b; height: 6px; border-radius: 4px; overflow: hidden; }
+        .progress-fill-white { width: 85%; height: 100%; background-color: #e2e8f0; }
+        .progress-fill-gray { width: 15%; height: 100%; background-color: #475569; }
+        .info-box { display: flex; justify-content: space-between; align-items: center; background-color: rgba(2, 6, 23, 0.5); padding: 12px; border-radius: 8px; border: 1px solid rgba(30, 41, 59, 0.6); margin-bottom: 10px; font-size: 14px; }
+        .info-box.tg { background-color: rgba(255, 255, 255, 0.02); border-color: rgba(255, 255, 255, 0.1); text-decoration: none; color: inherit; }
+        .info-box span:first-child { color: #94a3b8; }
+        .info-box .val-owner { font-weight: 700; color: #ffffff; font-family: monospace; }
+        .info-box .val-tg { font-weight: 700; color: #ffffff; font-family: monospace; text-decoration: underline; }
+        .info-box.tg:hover { background-color: rgba(255, 255, 255, 0.08); }
+        footer { border-top: 1px solid #1e293b; background-color: #020617; padding: 15px; text-align: center; font-size: 12px; color: #64748b; font-weight: 500; }
+    </style>
+
+    <!-- Radar JavaScript Kodları -->
+    <script>
+        const canvas = document.getElementById('radarCanvas');
+        const ctx = canvas.getContext('2d');
+        const cx = canvas.width / 2; const cy = canvas.height / 2;
+        const radius = canvas.width / 2 - 10; let angle = 0;
+        const targets = [{ r: radius * 0.4, a: 1.2, size: 3, alpha: 0 }, { r: radius * 0.7, a: 3.8, size: 4, alpha: 0 }, { r: radius * 0.2, a: 5.5, size: 2, alpha: 0 }];
+
+        function drawRadar() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)'; ctx.lineWidth = 1;
+            for (let i = 1; i <= 4; i++) { ctx.beginPath(); ctx.arc(cx, cy, (radius / 4) * i, 0, Math.PI * 2); ctx.stroke(); }
+            ctx.beginPath(); ctx.moveTo(cx - radius, cy); ctx.lineTo(cx + radius, cy); ctx.moveTo(cx, cy - radius); ctx.lineTo(cx, cy + radius); ctx.stroke();
+            angle = (angle + 0.015) % (Math.PI * 2);
+            for (let i = 0; i < 40; i++) {
+                let alpha = (1 - i / 40) * 0.18; let currentAngle = angle - (i * 0.015);
+                ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`; ctx.lineWidth = 2;
+                ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + Math.cos(currentAngle) * radius, cy + Math.sin(currentAngle) * radius); ctx.stroke();
+            }
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)'; ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + Math.cos(angle) * radius, cy + Math.sin(angle) * radius); ctx.stroke();
+            targets.forEach(target => {
+                let diff = Math.abs(angle - target.a);
+                if (diff < 0.05) { target.alpha = 1.0; } else { target.alpha -= 0.008; if (target.alpha < 0) target.alpha = 0; }
+                if (target.alpha > 0) {
+                    let tx = cx + Math.cos(target.a) * target.r; let ty = cy + Math.sin(target.a) * target.r;
+                    ctx.fillStyle = `rgba(255, 255, 255, ${target.alpha})`; ctx.beginPath(); ctx.arc(tx, ty, target.size, 0, Math.PI * 2); ctx.fill();
+                }
+            });
+            if (Math.random() < 0.03) {
+                const coordDiv = document.getElementById('radarCoords');
+                coordDiv.textContent = `LAT: ${(Math.random() * 100).toFixed(2)} // LNG: ${(Math.random() * 100).toFixed(2)}`;
+            }
+            requestAnimationFrame(drawRadar);
+        }
+        drawRadar();
+    </script>
+</body>
+</html>
+
