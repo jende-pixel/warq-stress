@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WARQSTRESS | Next-Generation Stress Testing</title>
+    <style>
+        :root {
+            --bg-color: #0b0c16;
+            --panel-bg: #111322;
+            --text-main: #ffffff;
+            --text-muted: #72769d;
+            --neon-pink: #ff007f;
+            --neon-purple: #9d00ff;
+            --neon-blue: #00d2ff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
+            padding-bottom: 60px;
+            position: relative;
+        }
+
+        /* Arka Plandaki Çizgisel Kuru Kafa Katmanı */
+        .background-skull-overlay {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-20%, -40%);
+            width: 800px;
+            height: 800px;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.05; /* Arka planda hafifçe görünmesi için */
+        }
+
+        /* Üst Menü Barı */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #080911;
+            padding: 15px 30px;
+            border-bottom: 1px solid #1a1c33;
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 22px;
+            letter-spacing: 2px;
+            background: linear-gradient(45deg, var(--neon-pink), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(255, 0, 127, 0.3);
+        }
+
+        .status-badge {
+            background: rgba(157, 0, 255, 0.1);
+            border: 1px solid var(--neon-purple);
+            color: #d1a6ff;
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            box-shadow: 0 0 10px rgba(157, 0, 255, 0.2);
+        }
+
+        /* Ana Grid Sistemi */
+        .container {
+            display: grid;
+            grid-template-columns: 320px 1fr 340px;
+            gap: 20px;
+            padding: 25px;
+            max-width: 1600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 5;
+        }
+
+        /* Panel Genel Yapısı */
+        .panel {
+            background-color: var(--panel-bg);
+            border: 1px solid #1f223d;
+            border-radius: 8px;
+            padding: 20px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px); /* Arka plandaki kuru kafanın panellerin altından yumuşak görünmesi için */
+        }
+
+        .panel-title {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-left: 3px solid var(--neon-pink);
+            padding-left: 10px;
+        }
+
+        /* Sol Panel Modülleri */
+        .left-col {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Radar Alanı */
+        .radar-container {
+            width: 100%;
+            height: 240px;
+            position: relative;
+            background: radial-gradient(circle, #161930 0%, #0d0f1d 70%);
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid #25294a;
+        }
+
+        .radar-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .radar-info {
+            position: absolute;
+            bottom: 12px;
+            width: 100%;
+            text-align: center;
+            font-size: 10px;
+            font-family: monospace;
+            color: var(--neon-pink);
+            letter-spacing: 1px;
+            text-shadow: 0 0 5px var(--neon-pink);
+        }
+
+        /* Log Alanı */
+        .log-container {
+            flex-grow: 1;
+            min-height: 250px;
+            background-color: #0d0f1d;
+            border: 1px solid #1f223d;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .log-line {
+            line-height: 1.4;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .log-system { color: var(--neon-blue); }
+        .log-success { color: #00ff66; }
+        .log-warn { color: var(--neon-pink); }
+        /* Orta Panel Modülleri (Tanıtım Alanı) */
+        .promo-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px;
+            background: radial-gradient(circle at center, rgba(27, 18, 43, 0.8) 0%, rgba(17, 13, 34, 0.9) 100%);
+            border: 1px solid rgba(255, 0, 127, 0.15);
+            box-shadow: inset 0 0 40px rgba(157, 0, 255, 0.05);
+        }
+
+        .promo-badge {
+            background: linear-gradient(90deg, var(--neon-pink), var(--neon-purple));
+            color: white;
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 25px;
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
+        }
+
+        .promo-title {
+            font-size: 38px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+            color: #ffffff;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .promo-title span {
+            background: linear-gradient(135deg, #fff 30%, var(--neon-pink) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .promo-desc {
+            color: var(--text-muted);
+            font-size: 15px;
+            max-width: 550px;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            width: 100%;
+            max-width: 650px;
+        }
+
+        .feature-card {
+            background: rgba(13, 15, 29, 0.6);
+            border: 1px solid rgba(157, 0, 255, 0.15);
+            border-radius: 8px;
+            padding: 25px;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 20px rgba(255, 0, 127, 0.1);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--neon-pink), var(--neon-purple));
+        }
+
+        .feature-icon {
+            font-size: 24px;
+            margin-bottom: 12px;
+            display: inline-block;
+        }
+
+        .feature-card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #fff;
+            letter-spacing: 0.5px;
+        }
+
+        .feature-card p {
+            font-size: 12.5px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* Sağ Panel Modülleri */
+        .right-col {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .stats-item {
+            margin-bottom: 18px;
+        }
+
+        .stats-label-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .stats-val {
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .progress-bar-bg {
+            background-color: #0d0f1d;
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+            border: 1px solid #1a1d36;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--neon-purple), var(--neon-pink));
+            box-shadow: 0 0 10px var(--neon-pink);
+        }
+
+        /* Grafik Alanı */
+        .chart-box {
+            width: 100%;
+            height: 150px;
+            background-color: #0d0f1d;
+            border: 1px solid #1f223d;
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* Admin Bilgileri */
+        .admin-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #1a1c33;
+            font-size: 12px;
+        }
+
+        .admin-row:last-child {
+            border-bottom: none;
+        }
+
+        .admin-lbl {
+            color: var(--text-muted);
+        }
+
+        .admin-val {
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .admin-link {
+            color: var(--neon-blue);
+            text-decoration: none;
+            transition: text-shadow 0.2s;
+        }
+
+        .admin-link:hover {
+            text-shadow: 0 0 8px var(--neon-blue);
+        }
+
+        /* Alt Bilgi */
+        .footer {
+            text-align: center;
+            font-size: 11px;
+            color: #40446b;
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            left: 0;
+            letter-spacing: 0.5px;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Arka Plandaki Çizgisel Kuru Kafa Tuvali -->
+    <div class="background-skull-overlay">
+        <canvas id="skullCanvas" width="800" height="800"></canvas>
+    </div>
+
+    <!-- Üst Menü -->
+    <div class="navbar">
+        <div class="logo">WARQSTRESS</div>
+        <div class="status-badge">SYSTEM SECURE</div>
+    </div>
+
+    <!-- Ana Panel İçeriği -->
+    <div class="container">
+        
+        <!-- SOL KOLON -->
+        <div class="left-col">
+            <div class="panel">
+                <div class="panel-title">THREAT RADAR</div>
+                <div class="radar-container">
+                    <canvas id="radar" class="radar-canvas"></canvas>
+                    <div class="radar-info">SCANNING NETWORK...<br>LAT: 24.43 // LNG: 72.21</div>
+                </div>
+            </div>
+
+            <div class="panel" style="flex-grow: 1; display: flex; flex-direction: column;">
+                <div class="panel-title">LIVE OPERATIONS LOG</div>
+                <div id="logBox" class="log-container"></div>
+            </div>
+        </div>
+
+        <!-- ORTA KOLON (Özgün Tanıtım Alanı) -->
+        <div class="panel promo-container">
+            <div class="promo-badge">Yüksek Performanslı Altyapı</div>
+            <h1 class="promo-title">Gelişmiş <span>Yük Testi</span> Çözümleri</h1>
+            <p class="promo-desc">
+                Sistemlerinizin sınırlarını ve dijital dayanıklılığını keşfedin. Güçlendirilmiş bulut ağımızla, web uygulamalarınızın ve ağ altyapılarınızın gerçek zamanlı stres simülasyonlarını en doğru metriklerle raporlayın.
+            </p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon" style="color: var(--neon-pink);">⚡</div>
+                    <h3>L7 Uygulama Katmanı</h3>
+                    <p>Gelişmiş motor yapısı sayesinde Cloudflare, Brave Shield ve popüler CDN koruma duvarları üzerinde esnek ve gerçekçi trafik simülasyonları.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon" style="color: var(--neon-purple);">🌐</div>
+                    <h3>L4 Ağ Katmanı</h3>
+                    <p>Yüksek bant genişliğine sahip altyapılar için esnek hat optimizasyonu ve protokol tabanlı gelişmiş performans stres doğrulama testleri.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SAĞ KOLON -->
+        <div class="right-col">
+            <div class="panel">
+                <div class="panel-title">WARQ BOTNET // TOP 1 BOTNET</div>
+                
+                <div class="stats-item">
+                    <div class="stats-label-row">
+                        <span>Total Power Capacity</span>
+                        <span class="stats-val" style="color: var(--neon-pink);">1.20 Tbps</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="width: 85%;"></div>
+                    </div>
+                </div>
+
+                <div class="stats-item" style="margin-bottom: 0;">
+                    <div class="stats-label-row">
+                        <span>Concurrent Slots</span>
+                        <span class="stats-val">0 / 15 Active</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="width: 0%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-title">L7 TRAFFIC LOAD <span id="rpsVal" style="float: right; color: var(--neon-pink);">9.3M RPS</span></div>
+                <div class="chart-box">
+                    <canvas id="liveChart" class="chart-canvas"></canvas>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-title">ADMINISTRATION</div>
+                <div class="admin-row">
+                    <span class="admin-lbl">Owner:</span>
+                    <span class="admin-val">anix</span>
+                </div>
+                <div class="admin-row">
+                    <span class="admin-lbl">Telegram:</span>
+                    <span class="admin-val"><a href="#" class="admin-link">@17run</a></span>
+                </div>
+                <div class="admin-row">
+                    <span class="admin-lbl">Official Channel:</span>
+                    <span class="admin-val"><a href="#" class="admin-link">@ddosoflegend</a></span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        Powered By anixsenior.com Protection
+    </div>
+    <!-- Script ve Animasyon Motorları -->
+    <script>
+        // --- 0. ARKA PLAN VEKTÖREL SİBER KURU KAFA ÇİZİMİ ---
+        const sCanvas = document.getElementById('skullCanvas');
+        const sCtx = sCanvas.getContext('2d');
+
+        function drawCyberSkull() {
+            sCtx.clearRect(0, 0, 800, 800);
+            sCtx.strokeStyle = '#ff007f'; // Neon Pembe Çizgiler
+            sCtx.lineWidth = 1.5;
+            sCtx.shadowBlur = 15;
+            sCtx.shadowColor = '#9d00ff'; // Mor Parlama Efekti
+
+            sCtx.beginPath();
+            // Alın ve Dış Kafa Yapısı
+            sCtx.moveTo(250, 200); sCtx.bezierCurveTo(250, 80, 550, 80, 550, 200);
+            sCtx.bezierCurveTo(550, 280, 520, 320, 520, 380);
+            // Elmacık Kemikleri ve Çene Üstü
+            sCtx.lineTo(470, 420); sCtx.lineTo(470, 490);
+            // Dişler / Çene Altı Hattı
+            sCtx.lineTo(440, 490); sCtx.lineTo(440, 460); sCtx.lineTo(420, 460); sCtx.lineTo(420, 490);
+            sCtx.lineTo(400, 490); sCtx.lineTo(400, 460); sCtx.lineTo(380, 460); sCtx.lineTo(380, 490);
+            sCtx.lineTo(360, 490); sCtx.lineTo(360, 460); sCtx.lineTo(330, 460); sCtx.lineTo(330, 490);
+            // Sol Elmacık Kemikleri Dönüşü
+            sCtx.lineTo(280, 490); sCtx.lineTo(280, 420); sCtx.lineTo(230, 380);
+            sCtx.bezierCurveTo(230, 320, 250, 280, 250, 200);
+            sCtx.stroke();
+
+            // Göz Çukurları (Köşeli Siber Tasarım)
+            sCtx.beginPath();
+            // Sol Göz
+            sCtx.moveTo(290, 240); sCtx.lineTo(370, 260); sCtx.lineTo(350, 320); sCtx.lineTo(280, 300); sCtx.closePath();
+            // Sağ Göz
+            sCtx.moveTo(510, 240); sCtx.lineTo(430, 260); sCtx.lineTo(450, 320); sCtx.lineTo(520, 300); sCtx.closePath();
+            sCtx.stroke();
+
+            // Burun Boşluğu (Üçgen Matrix Tasarımı)
+            sCtx.beginPath();
+            sCtx.moveTo(400, 310); sCtx.lineTo(425, 370); sCtx.lineTo(375, 370);
+            sCtx.closePath();
+            sCtx.stroke();
+
+            // Ekstra Siber Bağlantı Çizgileri / HUD Efekti
+            sCtx.strokeStyle = 'rgba(0, 210, 255, 0.3)'; // Neon Mavi Yardımcı Çizgiler
+            sCtx.beginPath();
+            sCtx.moveTo(150, 200); sCtx.lineTo(250, 200);
+            sCtx.moveTo(650, 200); sCtx.lineTo(550, 200);
+            sCtx.moveTo(400, 50);  sCtx.lineTo(400, 110);
+            sCtx.stroke();
+        }
+        drawCyberSkull();
+
+
+        // --- 1. GERÇEKÇİ RADAR MOTORU (Dönen Işık ve Beyaz Ping Noktaları) ---
+        const radarCanvas = document.getElementById('radar');
+        const rCtx = radarCanvas.getContext('2d');
+        
+        function resizeRadar() {
+            radarCanvas.width = radarCanvas.parentElement.clientWidth;
+            radarCanvas.height = 200;
+        }
+        resizeRadar();
+
+        let angle = 0;
+        let blips = [];
+
+        setInterval(() => {
+            if (blips.length < 5) {
+                const radius = Math.random() * (radarCanvas.height / 2 - 20);
+                const blipAngle = Math.random() * Math.PI * 2;
+                blips.push({
+                    x: radarCanvas.width / 2 + Math.cos(blipAngle) * radius,
+                    y: radarCanvas.height / 2 + Math.sin(blipAngle) * radius,
+                    alpha: 1.0
+                });
+            }
+        }, 1200);
+
+        function drawRadar() {
+            rCtx.clearRect(0, 0, radarCanvas.width, radarCanvas.height);
+            const cx = radarCanvas.width / 2;
+            const cy = radarCanvas.height / 2;
+            const maxRadius = radarCanvas.height / 2 - 10;
+
+            rCtx.strokeStyle = 'rgba(157, 0, 255, 0.15)';
+            rCtx.lineWidth = 1;
+            for (let r = maxRadius / 3; r <= maxRadius; r += maxRadius / 3) {
+                rCtx.beginPath();
+                rCtx.arc(cx, cy, r, 0, Math.PI * 2);
+                rCtx.stroke();
+            }
+
+            rCtx.beginPath();
+            rCtx.moveTo(cx - maxRadius, cy); rCtx.lineTo(cx + maxRadius, cy);
+            rCtx.moveTo(cx, cy - maxRadius); rCtx.lineTo(cx, cy + maxRadius);
+            rCtx.stroke();
+
+            rCtx.save();
+            rCtx.translate(cx, cy);
+            rCtx.rotate(angle);
+            const gradient = rCtx.createRadialGradient(0, 0, 0, 0, 0, maxRadius);
+            gradient.addColorStop(0, 'rgba(255, 0, 127, 0.3)');
+            gradient.addColorStop(1, 'rgba(157, 0, 255, 0)');
+            
+            rCtx.fillStyle = gradient;
+            rCtx.beginPath();
+            rCtx.moveTo(0, 0);
+            rCtx.arc(0, 0, maxRadius, 0, Math.PI / 4);
+            rCtx.closePath();
+            rCtx.fill();
+            rCtx.restore();
+
+            for (let i = blips.length - 1; i >= 0; i--) {
+                let b = blips[i];
+                rCtx.beginPath();
+                rCtx.arc(b.x, b.y, 3, 0, Math.PI * 2);
+                rCtx.fillStyle = `rgba(255, 255, 255, ${b.alpha})`;
+                rCtx.shadowBlur = 8;
+                rCtx.shadowColor = "#ffffff";
+                rCtx.fill();
+                rCtx.shadowBlur = 0;
+
+                b.alpha -= 0.008;
+                if (b.alpha <= 0) {
+                    blips.splice(i, 1);
+                }
+            }
+
+            angle += 0.025;
+            requestAnimationFrame(drawRadar);
+        }
+        drawRadar();
+
+
+        // --- 2. CANLI TRAFİK YÜKÜ GRAFİĞİ (Aşağı Yukarı Dalgalanan Neon Tablo) ---
+        const chartCanvas = document.getElementById('liveChart');
+        const cCtx = chartCanvas.getContext('2d');
+
+        function resizeChart() {
+            chartCanvas.width = chartCanvas.parentElement.clientWidth;
+            chartCanvas.height = 150;
+        }
+        resizeChart();
+
+        let points = Array(25).fill(75);
+        const rpsValEl = document.getElementById('rpsVal');
+
+        function drawChart() {
+            cCtx.clearRect(0, 0, chartCanvas.width, chartCanvas.height);
+            
+            points.shift();
+            const lastVal = points[points.length - 1];
+            const change = (Math.random() - 0.5) * 25;
+            let newVal = lastVal + change;
+            if(newVal < 20) newVal = 25;
+            if(newVal > 130) newVal = 120;
+            points.push(newVal);
+
+            const currentRps = (9.0 + Math.random() * 0.8).toFixed(1);
+            rpsValEl.innerText = `${currentRps}M RPS`;
+
+            const step = chartCanvas.width / (points.length - 1);
+            
+            cCtx.beginPath();
+            cCtx.moveTo(0, chartCanvas.height);
+            for (let i = 0; i < points.length; i++) {
+                cCtx.lineTo(i * step, chartCanvas.height - points[i]);
+            }
+            cCtx.lineTo(chartCanvas.width, chartCanvas.height);
+            cCtx.closePath();
+            
+            let fillGrad = cCtx.createLinearGradient(0, 0, 0, chartCanvas.height);
+            fillGrad.addColorStop(0, 'rgba(255, 0, 127, 0.15)');
+            fillGrad.addColorStop(1, 'rgba(157, 0, 255, 0)');
+            cCtx.fillStyle = fillGrad;
+            cCtx.fill();
+
+            cCtx.beginPath();
+            cCtx.moveTo(0, chartCanvas.height - points[0]);
+            for (let i = 1; i < points.length; i++) {
+                cCtx.lineTo(i * step, chartCanvas.height - points[i]);
+            }
+            
+            cCtx.strokeStyle = '#ff007f';
+            cCtx.lineWidth = 2.5;
+            cCtx.shadowBlur = 10;
+            cCtx.shadowColor = '#ff007f';
+            cCtx.stroke();
+            cCtx.shadowBlur = 0;
+
+            setTimeout(drawChart, 120);
+        }
+        drawChart();
+
+
+        // --- 3. DİNAMİK AZALAN/YOK OLAN OPERASYON LOG SİSTEMİ (Decay Effect) ---
+        const logBox = document.getElementById('logBox');
+        const logTemplates = [
+            { text: "[SYSTEM] Initialize warqstress operations core... OK", type: "log-system" },
+            { text: "[NETWORK] Layer 7 cluster traffic synchronization optimized.", type: "log-system" },
+            { text: "[SUCCESS] Bypassing Cloudflare secure challenge token successfully.", type: "log-success" },
+            { text: "[API] Response received from gateway cluster in 12ms.", type: "log-success" },
+            { text: "[WARN] Brave Shield shield mitigation tracking initiated.", type: "log-warn" },
+            { text: "[SECURITY] Anti-DDoS infrastructure bypass pipeline verified.", type: "log-success" },
+            { text: "[SYSTEM] Memory core optimization loop running cleanly.", type: "log-system" }
+        ];
+
+        function addNewLog() {
+            const template = logTemplates[Math.floor(Math.random() * logTemplates.length)];
+            const logLine = document.createElement('div');
+            logLine.className = `log-line ${template.type}`;
+            logLine.innerText = template.text;
+            
+            logBox.appendChild(logLine);
+
+            if (logBox.children.length > 10) {
+                logBox.removeChild(logBox.firstChild);
+            }
+
+            const children = Array.from(logBox.children);
+            const total = children.length;
+            
+            children.forEach((child, index) => {
+                const opacityValue = (index + 1) / total;
+                child.style.opacity = opacityValue;
+                
+                if (index < total - 1) {
+                    child.style.transform = `translateY(-${(total - index - 1) * 2}px)`;
+                }
+            });
+        }
+
+        addNewLog();
+        setTimeout(addNewLog, 500);
+        setInterval(addNewLog, 2000);
+
+        window.addEventListener('resize', () => {
+            resizeRadar();
+            resizeChart();
+        });
+    </script>
+</body>
+</html>
+
