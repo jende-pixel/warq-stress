@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WARQSTRESS | Next-Generation Stress Testing Platform</title>
+    <script src="https://tailwindcss.com"></script>
+    <link href="https://googleapis.com" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #06060a;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #ffffff 50%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .glow-effect {
+            box-shadow: 0 0 35px rgba(139, 92, 246, 0.25);
+        }
+        .cube-grid {
+            perspective: 1000px;
+        }
+        /* JS Hatası Durumunda Bile Sitenin Görünmesini Sağlayan Güvenli Animasyon */
+        .fade-in-up {
+            animation: fadeInUpSimple 0.8s cubic-bezier(0.215, 0.610, 0.355, 1) forwards;
+        }
+        @keyframes fadeInUpSimple {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="text-white min-h-screen flex flex-col justify-between overflow-x-hidden bg-[#06060a]">
+
+    <!-- Üst Menü (Navbar) -->
+    <nav class="w-full max-w-7xl mx-auto px-6 py-6 flex justify-between items-center z-50">
+        <div class="flex items-center space-x-12">
+            <a href="#" class="text-xl font-extrabold tracking-wider text-white flex items-center gap-2.5">
+                <span class="w-3 h-6 bg-purple-600 rounded-sm inline-block shadow-[0_0_15px_rgba(147,51,234,0.5)]"></span>
+                WARQSTRESS<span class="text-purple-500">.XYZ</span>
+            </a>
+            <div class="hidden md:flex items-center space-x-8 text-zinc-400 text-sm font-medium">
+                <a href="#features" class="hover:text-white transition-colors">Features</a>
+                <a href="#terminals" class="hover:text-white transition-colors">Terminals</a>
+                <a href="#stats" class="hover:text-white transition-colors">Stats</a>
+                <a href="#contacts" class="hover:text-white transition-colors">Contact</a>
+            </div>
+        </div>
+        <div class="flex items-center space-x-5 text-sm font-semibold">
+            <a href="#" class="text-zinc-300 hover:text-white transition-colors">Sign In</a>
+            <a href="#" class="bg-purple-600 hover:bg-purple-700 px-5 py-2.5 rounded-xl transition-all glow-effect">Sign Up</a>
+        </div>
+    </nav>
+    <!-- 1. BÖLÜM: Hero Section & 3D Bloklar -->
+    <main class="w-full max-w-7xl mx-auto px-6 flex-1 flex flex-col lg:flex-row items-center justify-between py-12 lg:py-20 relative fade-in-up">
+        <div class="max-w-2xl z-10 text-center lg:text-left">
+            <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight leading-[1.1] mb-6 gradient-text">
+                Make your future better. Invest in power.
+            </h1>
+            <p class="text-zinc-400 text-base sm:text-lg mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                Creating your account with WARQSTRESS.XYZ has never been easier. Sign up and start trading instantly.
+            </p>
+            <form class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto lg:mx-0 bg-zinc-900/40 p-2 rounded-2xl border border-zinc-800/60 backdrop-blur-md">
+                <input type="email" placeholder="Enter your email" required class="bg-transparent px-4 py-3.5 rounded-xl text-sm text-white focus:outline-none flex-1 placeholder-zinc-500">
+                <button type="submit" class="bg-purple-600 hover:bg-purple-700 px-7 py-3.5 rounded-xl font-bold text-sm transition-all glow-effect">Sign up</button>
+            </form>
+        </div>
+
+        <!-- Sağ Alan: Küp İllüstrasyonları -->
+        <div class="w-full lg:w-1/2 flex justify-center items-center mt-16 lg:mt-0 relative h-[400px] cube-grid">
+            <div class="absolute w-80 h-80 bg-purple-600/10 rounded-full blur-[100px] -z-10"></div>
+            <div class="relative w-64 h-64 flex items-center justify-center">
+                <div class="absolute transform -translate-x-12 -translate-y-12 w-28 h-28 bg-gradient-to-br from-zinc-800 to-purple-600 rounded-2xl shadow-2xl flex items-center justify-center border border-purple-500/30 rotate-12">
+                    <span class="text-3xl">⚡</span>
+                </div>
+                <div class="absolute transform translate-x-16 -translate-y-6 w-24 h-24 bg-gradient-to-br from-zinc-700 via-zinc-900 to-purple-900 rounded-2xl shadow-2xl flex items-center justify-center border border-zinc-700/50 -rotate-12">
+                    <span class="text-2xl font-bold text-purple-400">L7</span>
+                </div>
+                <div class="absolute transform -translate-x-8 translate-y-16 w-24 h-24 bg-gradient-to-br from-zinc-900 to-zinc-800 rounded-2xl shadow-2xl flex items-center justify-center border border-purple-500/20 -rotate-6">
+                    <span class="text-xl font-bold text-zinc-400">100T</span>
+                </div>
+                <div class="absolute transform translate-x-12 translate-y-14 w-28 h-28 bg-gradient-to-br from-purple-600 to-indigo-900 rounded-2xl shadow-2xl flex items-center justify-center border border-indigo-400/30 rotate-45">
+                    <span class="text-3xl">💥</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 2. BÖLÜM: Neden Biz? (Dinamik Tab Alanı) -->
+    <section id="features" class="w-full max-w-7xl mx-auto px-6 py-20 fade-in-up">
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-center mb-12">Why WARQSTRESS.XYZ?</h2>
+        
+        <div class="flex flex-wrap justify-center gap-4 md:gap-8 border-b border-zinc-800 pb-4 mb-8">
+            <button onclick="switchTab('support')" id="btn-support" class="tab-btn text-purple-500 border-b-2 border-purple-500 pb-2 flex items-center gap-2 font-semibold">
+                <span>💬</span> 24/7 Support
+            </button>
+            <button onclick="switchTab('security')" id="btn-security" class="tab-btn text-zinc-400 hover:text-white pb-2 flex items-center gap-2 font-semibold">
+                <span>🛡️</span> 360° Security
+            </button>
+            <button onclick="switchTab('capacity')" id="btn-capacity" class="tab-btn text-zinc-400 hover:text-white pb-2 flex items-center gap-2 font-semibold">
+                <span>📊</span> 100 Tbps+ Capacity
+            </button>
+            <button onclick="switchTab('power')" id="btn-power" class="tab-btn text-zinc-400 hover:text-white pb-2 flex items-center gap-2 font-semibold">
+                <span>🚀</span> >50M+ RPS
+            </button>
+        </div>
+
+        <div class="bg-zinc-900/20 border border-zinc-800/80 rounded-3xl p-8 min-h-[250px] backdrop-blur-sm flex flex-col md:flex-row justify-between items-center gap-8">
+            <div id="tab-support" class="tab-content w-full flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="max-w-xl">
+                    <h3 class="text-2xl font-bold mb-4 text-white">24/7 Support</h3>
+                    <p class="text-zinc-400 leading-relaxed">Get immediate assistance - our support team is always available via dedicated channels. Admin panel and network masters are active 24/7 to resolve infrastructure layout issues.</p>
+                    <a href="https://t.me" target="_blank" class="inline-block mt-6 bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-xl text-sm font-bold transition">Contact Admin</a>
+                </div>
+                <div class="w-24 h-24 bg-purple-600/10 border border-purple-500/20 rounded-2xl flex items-center justify-center text-4xl">🧑‍💻</div>
+            </div>
+
+            <div id="tab-security" class="tab-content hidden w-full flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="max-w-xl">
+                    <h3 class="text-2xl font-bold mb-4 text-white">360° Security</h3>
+                    <p class="text-zinc-400 leading-relaxed">Cutting-edge security technologies inside our system protect your logs and account privacy. Our backend architecture has proven its absolute resilience and complete data integrity.</p>
+                </div>
+                <div class="w-24 h-24 bg-purple-600/10 border border-purple-500/20 rounded-2xl flex items-center justify-center text-4xl">🔑</div>
+            </div>
+
+            <div id="tab-capacity" class="tab-content hidden w-full flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="max-w-xl">
+                    <h3 class="text-2xl font-bold mb-4 text-white">100 Tbps+ Massive Capacity</h3>
+                    <p class="text-zinc-400 leading-relaxed">Our backbone network capabilities exceed 100 Tbps+ bandwidth throughput. We are capable of bypassing enterprise-grade mitigation systems and modern cloud firewalls effortlessly.</p>
+                </div>
+                <div class="w-24 h-24 bg-purple-600/10 border border-purple-500/20 rounded-2xl flex items-center justify-center text-4xl">🌐</div>
+            </div>
+
+            <div id="tab-power" class="tab-content hidden w-full flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="max-w-xl">
+                    <h3 class="text-2xl font-bold mb-4 text-white">>50M+ Requests Per Second</h3>
+                    <p class="text-zinc-400 leading-relaxed">Simulate realistic high-concurrency layer 7 attacks. Our platform safely generates more than 50,000,000+ requests per second concurrent engine speed to benchmark application layers.</p>
+                </div>
+                <div class="w-24 h-24 bg-purple-600/10 border border-purple-500/20 rounded-2xl flex items-center justify-center text-4xl">🔥</div>
+            </div>
+        </div>
+    </section>
+    <!-- 3. BÖLÜM: Terminal Karşılaştırmaları -->
+    <section id="terminals" class="w-full max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-8 fade-in-up">
+        <div class="bg-zinc-900/30 border border-zinc-800 p-8 rounded-3xl flex flex-col justify-between">
+            <div>
+                <h3 class="text-2xl font-bold mb-2 text-white">Professional Layer 7 Terminal</h3>
+                <p class="text-zinc-400 text-sm mb-6">Provides high-end tools for full concurrent bypass methods including HTTP/2, TLS-Fingerprint manipulation, and JS-Bypass.</p>
+                <button class="bg-purple-600 hover:bg-purple-700 px-6 py-2.5 rounded-xl font-semibold text-sm transition mb-6">Launch Terminal →</button>
+            </div>
+            <div class="bg-zinc-950 p-4 rounded-xl border border-zinc-800/80 font-mono text-xs text-purple-400 space-y-1.5">
+                <p>&gt; [SYSTEM] Initializing Layer 7 bypass vector...</p>
+                <p class="text-emerald-400">&gt; [SUCCESS] Attack successfully sent to target pipeline.</p>
+                <p class="text-zinc-500">&gt; [INFO] Current Rate: 54,200,000 RPS</p>
+            </div>
+        </div>
+
+        <div class="bg-zinc-900/30 border border-zinc-800 p-8 rounded-3xl flex flex-col justify-between">
+            <div>
+                <h3 class="text-2xl font-bold mb-2 text-white">Lite Layer 4 Terminal</h3>
+                <p class="text-zinc-400 text-sm mb-6">Allows you to perform fundamental infrastructure load tests via raw UDP, TCP-SYN, and custom amplification methods.</p>
+                <button class="bg-zinc-800 text-zinc-400 cursor-not-allowed px-6 py-2.5 rounded-xl font-semibold text-sm mb-6" disabled>Coming Soon</button>
+            </div>
+            <div class="bg-zinc-950 p-4 rounded-xl border border-zinc-800/80 font-mono text-xs text-zinc-500 space-y-1.5">
+                <p>&gt; [SYSTEM] L4 engine sleep mode active...</p>
+                <p>&gt; Waiting for next server allocation cluster...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rakamlarla İstatistikler Bölümü -->
+    <section id="stats" class="w-full max-w-7xl mx-auto px-6 py-16 fade-in-up">
+        <div class="text-center mb-10">
+            <h3 class="text-2xl font-bold tracking-tight text-white mb-2">Driving worldwide network testing capability.</h3>
+            <p class="text-zinc-400 text-sm">Engineered for speed, built for absolute volume scaling.</p>
+        </div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-zinc-900/40 border border-zinc-800/60 p-6 rounded-2xl text-center">
+                <h4 class="text-3xl font-extrabold text-white mb-1">100 Tbps+</h4>
+                <p class="text-xs text-zinc-500">Network Capacity</p>
+            </div>
+            <div class="bg-zinc-900/40 border border-zinc-800/60 p-6 rounded-2xl text-center">
+                <h4 class="text-3xl font-extrabold text-purple-500 mb-1">50M+ RPS</h4>
+                <p class="text-xs text-zinc-500">Layer 7 Power Limit</p>
+            </div>
+            <div class="bg-zinc-900/40 border border-zinc-800/60 p-6 rounded-2xl text-center">
+                <h4 class="text-3xl font-extrabold text-white mb-1">150+</h4>
+                <p class="text-xs text-zinc-500">Bypass Vectors</p>
+            </div>
+            <div class="bg-zinc-900/40 border border-zinc-800/60 p-6 rounded-2xl text-center">
+                <h4 class="text-3xl font-extrabold text-white mb-1">24/7/365</h4>
+                <p class="text-xs text-zinc-500">System Uptime</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- İletişim / Admin / Telegram Bilgileri (Hatalı Etiket Düzeltildi) -->
+    <section id="contacts" class="w-full max-w-7xl mx-auto px-6 py-12 border-t border-zinc-900 grid sm:grid-cols-3 gap-4 fade-in-up">
+        <a href="https://t.me" target="_blank" class="bg-zinc-900/20 border border-zinc-800 hover:border-purple-500/50 transition p-6 rounded-2xl flex items-center space-x-4">
+            <div class="bg-blue-600/20 text-blue-400 p-4 rounded-xl text-xl">✈️</div>
+            <div>
+                <h4 class="font-bold text-white">Telegram Channel</h4>
+                <p class="text-xs text-zinc-500">@l7run • Join community</p>
+            </div>
+        </a>
+        <div class="bg-zinc-900/20 border border-zinc-800 p-6 rounded-2xl flex items-center space-x-4">
+            <div class="bg-purple-600/20 text-purple-400 p-4 rounded-xl text-xl">👑</div>
+            <div>
+                <h4 class="font-bold text-white">Admin Status</h4>
+                <p class="text-xs text-zinc-400">Owner: <span class="text-purple-400 font-mono font-bold">anix</span></p>
+            </div>
+        </div>
+        <div class="bg-zinc-900/20 border border-zinc-800 p-6 rounded-2xl flex items-center space-x-4">
+            <div class="bg-emerald-600/20 text-emerald-400 p-4 rounded-xl text-xl">🟢</div>
+            <div>
+                <h4 class="font-bold text-white">Network Infrastructure</h4>
+                <p class="text-xs text-emerald-400">All power nodes operational</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Alt Alanı -->
+    <footer class="w-full bg-zinc-950/80 border-t border-zinc-900/60 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 py-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-sm text-zinc-400">
+            <div class="space-y-3">
+                <h5 class="text-white font-bold text-xs uppercase tracking-wider">Information</h5>
+                <ul class="space-y-2 text-xs">
+                    <li><a href="#" class="hover:text-white">Home</a></li>
+                    <li><a href="#" class="hover:text-white">About Us</a></li>
+                </ul>
+            </div>
+            <div class="space-y-3">
+                <h5 class="text-white font-bold text-xs uppercase tracking-wider">Products</h5>
+                <ul class="space-y-2 text-xs">
+                    <li><a href="#" class="hover:text-white">Layer 4 Methods</a></li>
+                    <li><a href="#" class="hover:text-white">Layer 7 Bypass</a></li>
+                </ul>
+            </div>
+            <div class="space-y-3">
+                <h5 class="text-white font-bold text-xs uppercase tracking-wider">Legal</h5>
+                <ul class="space-y-2 text-xs">
+                    <li><a href="#" class="hover:text-white">Terms of Service</a></li>
+                    <li><a href="#" class="hover:text-white">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="space-y-3">
+                <h5 class="text-white font-bold text-xs uppercase tracking-wider">Contacts</h5>
+                <ul class="space-y-2 text-xs">
+                    <li class="text-purple-400 font-mono">Admin: anix</li>
+                    <li><a href="https://t.me" target="_blank" class="text-blue-400 underline">Telegram: @l7run</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-6 py-4 border-t border-zinc-900/40 flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] text-zinc-600">
+            <p>© 2026 WARQSTRESS.XYZ. All rights reserved. Built for network stress testing legal validation parameters.</p>
+        </div>
+    </footer>
+
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('text-purple-500', 'border-b-2', 'border-purple-500');
+                el.classList.add('text-zinc-400');
+            });
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            document.getElementById('btn-' + tabId).classList.add('text-purple-500', 'border-b-2', 'border-purple-500');
+        }
+
+        // Güvenli Scroll Algılayıcı (Scroll ile senkronize dinamik tetikleme)
+        window.addEventListener('scroll', () => {
+            document.querySelectorAll('.fade-in-up').forEach(el => {
+                const speed = 0.5;
+                const rect = el.getBoundingClientRect();
+                if(rect.top < window.innerHeight) {
+                    el.style.opacity = "1";
+                    el.style.transform = "translateY(0)";
+                    el.style.transition = "all 0.6s ease-out";
+                }
+            });
+        });
+        // İlk açılış kontrolü
+        window.dispatchEvent(new Event('scroll'));
+    </script>
+</body>
+</html>
+
